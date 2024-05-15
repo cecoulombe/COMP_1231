@@ -29,7 +29,7 @@ DecimalFormat fmt = new DecimalFormat("0.00");
 //--------------------------------------------------------------------------------------------------------------------------------------------------
 public MetricUnit()
 {
-    // error message saying to pass some parameters
+    System.out.println("Must have a product ID, produce mass in kilograms, and product volume to add a product to the list.");
 } 
 
 //--------------------------------------------------------------------------------------------------------------------------------------------------

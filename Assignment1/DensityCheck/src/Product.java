@@ -37,8 +37,8 @@ protected Product()
 protected Product(String productID, double volume)
 {
     // create an object with the specified productID, mass, and volume
-    this.productID = productID;
-    this.volume = volume;
+    setProductID(productID);
+    setVolume(volume);
 }
 
 //--------------------------------------------------------------------------------------------------------------------------------------------------
@@ -79,7 +79,7 @@ protected double getVolume()
 protected abstract double computeDensity();
 
 //--------------------------------------------------------------------------------------------------------------------------------------------------
-// analysisResults: determines where the results lie within the range and returns the appropriate results
+// analysisResults: determines where the results lie within the range and returns the appropriate
 //--------------------------------------------------------------------------------------------------------------------------------------------------
 protected abstract String analysisResults();
 

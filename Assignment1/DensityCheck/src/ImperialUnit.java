@@ -15,18 +15,17 @@ import java.text.DecimalFormat;
 
 public class ImperialUnit extends Product{
 // variables
-private double massInOunces;
+double massInOunces;
 
 // decimal formatting
-DecimalFormat fmt = new DecimalFormat("#.00");
+DecimalFormat fmt = new DecimalFormat("0.00");
 
 //--------------------------------------------------------------------------------------------------------------------------------------------------
 // Default contructor ImperialUnit(): default constructor which will return an error to the user saying there must be an ID, mass, and volume given for the product
 //--------------------------------------------------------------------------------------------------------------------------------------------------
 public ImperialUnit()
 {
-    // error message saying to pass some parameters
-} 
+    System.out.println("Must have a product ID, produce mass in pounds and ounces, and product volume to add a product to the list.");} 
 
 //--------------------------------------------------------------------------------------------------------------------------------------------------
 // Constructor ImperialUnit(productID, mass, volume): initializes an object with the specifications from the driver
@@ -36,13 +35,13 @@ public ImperialUnit(String productID, double pounds, double ounces, double volum
     // use the parent to create a product with its ID and volume
     super(productID, volume);
 
-    massInOunces = ounces + (pounds * 16);
+    setMass(pounds, ounces);
 }
 
 //--------------------------------------------------------------------------------------------------------------------------------------------------
 // setMass(mass): sets the new mass of the object according to an input from the driver
 //--------------------------------------------------------------------------------------------------------------------------------------------------
-public void setMass(double pounds, double ounces)
+private void setMass(double pounds, double ounces)
 {
     massInOunces = ounces + (pounds * 16);
 }
@@ -50,7 +49,7 @@ public void setMass(double pounds, double ounces)
 //--------------------------------------------------------------------------------------------------------------------------------------------------
 // getMass(): returns the mass in ounces to the driver
 //--------------------------------------------------------------------------------------------------------------------------------------------------
-public double getMass()
+private double getMass()
 {
     return massInOunces;
 }
@@ -58,12 +57,12 @@ public double getMass()
 //--------------------------------------------------------------------------------------------------------------------------------------------------
 // getMassInGrams(): returns the mass in grams
 //--------------------------------------------------------------------------------------------------------------------------------------------------
-public double getMassInGrams()
+private double getMassInGrams()
 {
     // constants
     final double OZ_TO_GRAM = 28.35;    // 1oz = 28.35g
 
-    return massInOunces * OZ_TO_GRAM;
+    return getMass() * OZ_TO_GRAM;
 }
 
 //--------------------------------------------------------------------------------------------------------------------------------------------------
