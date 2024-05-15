@@ -26,7 +26,7 @@ public class ProductApp {
         // create 3 metric produce objects with 3 parameters each (ID, mass in kg, and volume in cm^3)
         productList[0] = new MetricUnit("MA1122", 0.52, 541.85);
         productList[1] = new MetricUnit("MB3452", 0.63, 496.24);
-        productList[2] = new MetricUnit("MC9470", 0.46, 278.01);
+        productList[2] = new MetricUnit("MC9470", 0.44, 282.05);
 
         // create 3 imperial product objects with 4 parameters each (ID, mass in pounds, mass in ounces, and volume in cm^3)
         productList[3] = new ImperialUnit("I1969X", 0, 14, 320.00);
