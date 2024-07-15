@@ -45,53 +45,247 @@
 
  import java.util.Scanner;
  import java.io.*;
+ import java.text.DecimalFormat;
 
 public class CustomerRating {
-    public static void main(String[] args)  {
-        // variables
-        boolean cont = true;
-        String  userInput = "";
+    // global variables
+    Customer customers[];
+    int size;   // to track the number of elements in the array
 
-        // file varaibles
-        String fileName = "records.txt";
-        File file = new File(fileName);
-        if(!file.exists())
+    //---------------------------------------------------------------------------------------------------------------------------------
+    // CustomerRating() constructor to create an instance of the class so that the non-static method readFromFile can be called as an instance method
+    //---------------------------------------------------------------------------------------------------------------------------------
+    private CustomerRating(int capacity)
+    {
+        this.customers = new Customer[capacity];
+        this.size = 0;
+    }
+
+    //---------------------------------------------------------------------------------------------------------------------------------
+    // readFromFile() reads the data from the file, ensures they are formatted correctly, and saves them in the global customers array
+    //---------------------------------------------------------------------------------------------------------------------------------
+    private void readFromFile(String filename) throws IOException
+    {
+        // initialize the fileReader and the bufferedReader to wrap it
+        FileReader fr = null;
+        BufferedReader reader = null;
+
+        try
         {
-            throw new FileNotFoundException();
+            // open the file
+            fr = new FileReader(filename);
+            reader = new BufferedReader(fr);
+
+            String line;
+            
+            System.out.println("Age\tRating\n----------------");
+            while((line = reader.readLine()) != null)
+            {
+                // store each line of the txt file in an array and split the line at the [tab]
+                line = line.trim();
+                String[] parts = line.split("\t");
+
+                System.out.println("Parts length = " + parts.length);
+                // check that there is an age and a rating in the line
+                if(parts.length != 2)
+                {
+                    // invalid format in the text file shouldn't occur, but if it does, print an error
+                    System.err.println("Parts.length = " + parts.length + ". Invalid format in input file: " + line);
+                    continue;
+                }
+
+                try 
+                {
+                    int age = Integer.parseInt(parts[0].trim());
+                    double rating = Double.parseDouble(parts[1].trim());
+
+                    if(size < customers.length)
+                    {
+                        customers[size] = new Customer(age, rating);
+                        System.out.println(customers[size]);
+                        size++;
+                    }
+                    else
+                    {
+                        throw new ArrayIndexOutOfBoundsException();
+                    }
+                }
+                catch(ArrayIndexOutOfBoundsException e)     // second try loop
+                {
+                    System.out.println("Array out of bounds: Cannot add any more customers from input file.");
+                }
+                catch(NumberFormatException e)     // second try loop
+                {
+                    System.out.println("Invalid number format in input file: " + line);
+                }   
+            }
         }
+        catch (FileNotFoundException e)   // big try block
+        {
+            // catches it and then rethrows it to the caller
+            throw e;    
+        }
+        finally
+        {   //big try block
+            // close all resource leaks after everything has been done with them
+            if(reader != null)
+            {
+                reader.close();
+            }
+            if(fr != null)
+            {
+                fr.close();
+            }
+        }
+    }
 
-
-        PrintWriter pwd = new PrintWriter(file);
-        
+    //---------------------------------------------------------------------------------------------------------------------------------
+    // writeNewRatings() takes input from the user and writes a new rating into the array assuming there is space until the exit key is input
+    //---------------------------------------------------------------------------------------------------------------------------------
+    private void writeNewRatings(String filename) throws IOException
+    {
+        // local variables
+        String userInput = "";
 
         // objects
         Scanner scan = new Scanner(System.in);
 
-        // open the file
-
-        // take the first input from the user
-        System.out.println("Welcome. Please enter a rating. (Enter \"!\" to exit.)");
-        userInput = scan.nextLine();
         
-        if(userInput.equals("!"))
+        while(!userInput.equals("!"))
         {
-            cont = false;
-        }
-
-        while(cont)
-        {
-            // read the current values and save them to an array
-            // take new input and add it to the file
-
-            // see if they want to add another record
-            System.out.println("Please enter another rating (Enter \"!\" to exit.)");
+            System.out.print("Enter AGE [integer], followed by one [TAB], then RATING [decimal number] (or enter \"!\" to exit): ");
             userInput = scan.nextLine();
-            if(userInput.equals("!"))
+            System.out.println();
+
+            if(!userInput.equals("!"))
             {
-                cont = false;
+                String[] parts = userInput.split("\t");
+
+                // System.out.println("Parts length = " + parts.length);
+
+                // check that there is an age and a rating in the line
+                if(parts.length != 2)
+                {
+                    // invalid format in the text file shouldn't occur, but if it does, print an error
+                    System.err.println("Invalid format, entry skipped.");
+                    continue;
+                }
+
+                try 
+                {
+                    int age = Integer.parseInt(parts[0].trim());
+                    double rating = Double.parseDouble(parts[1].trim());
+
+                    if(size < customers.length)
+                    {
+                        customers[size] = new Customer(age, rating);
+                        System.out.println("Customer added! Age: " + age + "\tRating: " + rating);
+                        System.out.println();
+                        size++;
+                    }
+                    else
+                    {
+                        throw new ArrayIndexOutOfBoundsException();
+                    }
+                }
+                catch(ArrayIndexOutOfBoundsException e)     // second try loop
+                {
+                    System.out.println("Array out of bounds!! Record skipped.");
+                }
+                catch(NumberFormatException e)     // second try loop
+                {
+                    System.out.println("Invalid number format!! Record skipped.");
+                }   
+            }
+        }
+        scan.close();
+        printArr();
+        writeToFile(filename);
+    }
+
+    //---------------------------------------------------------------------------------------------------------------------------------
+    // printArr() prints the formatted array and averages when the program is terminated
+    //---------------------------------------------------------------------------------------------------------------------------------
+    private void printArr()
+    {
+        // local variables
+        int sumAge = 0;
+        double sumRat = 0;
+        int count = 0;
+
+        // objects
+        DecimalFormat fmt = new DecimalFormat("0.00");
+
+        System.out.println("Age\tRating\n----------------");
+        for (Customer customer : customers) {
+            if(customer != null)
+            {
+                System.out.println(customer);
+                sumAge += customer.getAge();
+                sumRat += customer.getRating();
+                count++;
             }
         }
 
-        scan.close();
+        System.out.println("Average age: " + fmt.format((double) sumAge/count));
+        System.out.println("Average rating: " + fmt.format((double) sumRat/(double) count));
+    }
+
+    //---------------------------------------------------------------------------------------------------------------------------------
+    // writeToFile() writes the updated array to the file
+    //---------------------------------------------------------------------------------------------------------------------------------
+    private void writeToFile(String filename) throws IOException
+    {
+        FileWriter fw = null;
+        BufferedWriter writer = null;
+
+        // objects
+        DecimalFormat fmt = new DecimalFormat("0.00");
+
+        try
+        {
+            // open the file
+            fw = new FileWriter(filename);
+            writer = new BufferedWriter(fw);
+
+            for (int i = 0; i < size; i++)
+            {
+                Customer customer = customers[i];
+                String line = customer.getAge() + "\t" + fmt.format(customer.getRating());
+
+                writer.write(line);
+                writer.newLine();
+            }
+
+        }
+        catch (FileNotFoundException e)   // big try block
+        {
+            // catches it and then rethrows it to the caller
+            throw e;    
+        }
+        finally
+        {   //big try block
+            // close all resource leaks after everything has been done with them
+            if(writer != null)
+            {
+                writer.close();
+            }
+            if(fw != null)
+            {
+                fw.close();
+            }
+        }
+    }
+
+    public static void main(String[] args) throws IOException {
+        String fileName = "rating.txt";
+        //create an instance of the class
+        CustomerRating customerRating = new CustomerRating(5);
+
+        // call readFromFile on that instance
+        customerRating.readFromFile(fileName);
+
+        customerRating.writeNewRatings(fileName);
+
     }
 }

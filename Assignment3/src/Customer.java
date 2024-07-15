@@ -58,7 +58,7 @@ public class Customer {
     //------------------------------------------------------------------------------------------------
     public String toString()
     {
-        return age + "\t" + rating;
+        return age + "\t" + fmt.format(rating);
     }
 }
 
