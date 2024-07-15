@@ -85,7 +85,7 @@ public class CustomerRating {
                 line = line.trim();
                 String[] parts = line.split("\t");
 
-                System.out.println("Parts length = " + parts.length);
+                // System.out.println("Parts length = " + parts.length);
                 // check that there is an age and a rating in the line
                 if(parts.length != 2)
                 {
