@@ -66,7 +66,7 @@ public class CustomerRating {
     //---------------------------------------------------------------------------------------------------------------------------------
     private void readFromFile(String filename) throws IOException
     {
-        // initialize the fileReader and the bufferedReader to wrap it
+        // initialize the fileReader and the bufferedReader to wrap it so that lines can be read
         FileReader fr = null;
         BufferedReader reader = null;
 
@@ -85,7 +85,6 @@ public class CustomerRating {
                 line = line.trim();
                 String[] parts = line.split("\t");
 
-                // System.out.println("Parts length = " + parts.length);
                 // check that there is an age and a rating in the line
                 if(parts.length != 2)
                 {
@@ -160,8 +159,6 @@ public class CustomerRating {
             if(!userInput.equals("!"))
             {
                 String[] parts = userInput.split("\t");
-
-                // System.out.println("Parts length = " + parts.length);
 
                 // check that there is an age and a rating in the line
                 if(parts.length != 2)
@@ -279,12 +276,14 @@ public class CustomerRating {
 
     public static void main(String[] args) throws IOException {
         String fileName = "rating.txt";
+
         //create an instance of the class
         CustomerRating customerRating = new CustomerRating(5);
 
         // call readFromFile on that instance
         customerRating.readFromFile(fileName);
 
+        // write new records and update the file when exiting the app, also from the instance of the class
         customerRating.writeNewRatings(fileName);
 
     }
